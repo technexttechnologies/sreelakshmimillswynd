@@ -1048,3 +1048,29 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  /* Disable heavy SVG noise filter */
+  .film-grain {
+    display: none;
+  }
+  
+  /* Simplify the background orbs */
+  .ambient-highlight {
+    filter: blur(40px);
+    mix-blend-mode: normal;
+    opacity: 0.1;
+  }
+  
+  /* Disable heavy hero image luminosity blend */
+  .hero-bg {
+    mix-blend-mode: normal;
+    opacity: 0.5;
+  }
+  
+  /* Disable hardware-intensive blurs on reveal animations */
+  .reveal, .hero-content h1 .char {
+    filter: none !important;
+  }
+}
