@@ -96,28 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Interactive Cursor Glow
-  const cursorGlow = document.createElement('div');
-  cursorGlow.classList.add('cursor-glow');
-  document.body.appendChild(cursorGlow);
-
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
-  let glowX = mouseX;
-  let glowY = mouseY;
-
-  window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+  // Staggered reveals for product cards
+  const productCards = document.querySelectorAll('.product-card');
+  productCards.forEach((card, index) => {
+    card.style.transitionDelay = `${(index % 3) * 0.15}s`;
   });
-
-  function animateGlow() {
-    glowX += (mouseX - glowX) * 0.1;
-    glowY += (mouseY - glowY) * 0.1;
-    cursorGlow.style.transform = `translate3d(${glowX - 300}px, ${glowY - 300}px, 0)`;
-    requestAnimationFrame(animateGlow);
-  }
-  animateGlow();
 
   // Premium Headline Split Text Animation
   const headline = document.querySelector('.hero-content h1');
