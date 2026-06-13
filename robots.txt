@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sreelakshmimillswynd.vercel.app/sitemap.xml
