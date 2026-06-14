@@ -195,10 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const nextIndex = Math.min(currentIndex + 1, totalFrames - 1);
       const fadeProgress = rawIndex - currentIndex;
       
-      // Calculate Scroll Velocity for focal blur
-      const velocity = Math.abs(targetScrollY - currentScrollY);
-      const dynamicBlur = Math.min(velocity * 0.05, 5); // Smooth subtle blur on fast scroll
-      
       cinematicFrames.forEach((frame, idx) => {
         if (Math.abs(idx - currentIndex) <= 1) loadFrame(frame);
         
@@ -206,18 +202,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (idx === currentIndex) {
           frame.style.opacity = 1 - fadeProgress;
-          frame.style.transform = `scale(${baseZoom + (fadeProgress * 0.05)})`;
-          frame.style.filter = `blur(${dynamicBlur}px)`;
+          frame.style.transform = `translateZ(0) scale(${baseZoom + (fadeProgress * 0.05)})`;
           frame.style.zIndex = 1;
         } else if (idx === nextIndex) {
           frame.style.opacity = fadeProgress;
-          frame.style.transform = `scale(${baseZoom + ((fadeProgress - 1) * 0.05)})`;
-          frame.style.filter = `blur(${dynamicBlur}px)`;
+          frame.style.transform = `translateZ(0) scale(${baseZoom + ((fadeProgress - 1) * 0.05)})`;
           frame.style.zIndex = 2;
         } else {
           frame.style.opacity = 0;
           frame.style.zIndex = 0;
-          frame.style.filter = `blur(0px)`;
         }
       });
       
