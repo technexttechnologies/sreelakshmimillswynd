@@ -137,14 +137,16 @@ document.addEventListener('DOMContentLoaded', () => {
     headline.appendChild(iTag);
   }
 
-  // Cinematic Scroll Sequence Engine
+  // Cinematic Background Scene System (IntersectionObserver)
   const cinematicBgContainer = document.getElementById('cinematic-bg-container');
   const cinematicFrames = document.querySelectorAll('.cinematic-frame');
-  const timeLighting = document.querySelector('.cinematic-time-lighting');
+  const sections = document.querySelectorAll('section[data-scene]');
   
-  if (cinematicFrames.length > 0 && window.matchMedia("(min-width: 768px)").matches) {
+  if (cinematicFrames.length > 0 && sections.length > 0) {
     const totalFrames = cinematicFrames.length;
+    let activeSceneIndex = 0;
     
+    // Lazy load logic for frames
     const loadFrame = (frame) => {
       if (frame.tagName === 'IMG' && frame.dataset.src && !frame.src) {
         frame.src = frame.dataset.src;
@@ -156,68 +158,85 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
     
+    // Initial load
     loadFrame(cinematicFrames[0]);
-    if (cinematicFrames.length > 1) loadFrame(cinematicFrames[1]);
+    if (totalFrames > 1) loadFrame(cinematicFrames[1]);
 
-    // Inertia & Handheld Variables
-    let targetScrollY = 0;
-    let currentScrollY = 0;
+    // IntersectionObserver to detect which section is in view
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -40% 0px', // Trigger when section is in middle of viewport
+      threshold: 0.1
+    };
+
+    const sceneObserver = new IntersectionObserver((entries) => {
+      let maxIntersection = 0;
+      let newSceneIndex = activeSceneIndex;
+      
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > maxIntersection) {
+          maxIntersection = entry.intersectionRatio;
+          const sceneVal = parseInt(entry.target.getAttribute('data-scene'));
+          if (!isNaN(sceneVal)) {
+            newSceneIndex = sceneVal;
+          }
+        }
+      });
+      
+      if (newSceneIndex !== activeSceneIndex) {
+        activeSceneIndex = newSceneIndex;
+      }
+    }, observerOptions);
+
+    sections.forEach(section => sceneObserver.observe(section));
+
+    // Smooth Transition Loop
+    let currentFade = 0;
     let time = 0;
 
-    window.addEventListener('scroll', () => {
-      targetScrollY = window.scrollY;
-    });
-
-    const humanizedLoop = () => {
-      // Inertia Dampening
-      currentScrollY += (targetScrollY - currentScrollY) * 0.08;
+    const transitionLoop = () => {
+      // Smoothly approach the active scene index (e.g. going from 0 to 5)
+      currentFade += (activeSceneIndex - currentFade) * 0.05;
       
       // Handheld Camera Breathing (Math.sin/Math.cos)
       time += 0.02;
       const breathX = Math.sin(time * 0.5) * 8 + Math.cos(time * 0.3) * 4;
       const breathY = Math.cos(time * 0.4) * 8 + Math.sin(time * 0.6) * 4;
       
-      // Apply breathing to entire container
       if (cinematicBgContainer) {
         cinematicBgContainer.style.transform = `translate3d(${breathX}px, ${breathY}px, 0) scale(1.05)`;
       }
 
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = Math.max(0, Math.min(1, currentScrollY / maxScroll));
-      
-      // Time of day lighting (morning at top, neutral at bottom)
-      if (timeLighting) {
-        timeLighting.style.opacity = Math.max(0, 1 - (scrollPercent * 2));
-      }
-      
-      const rawIndex = scrollPercent * (totalFrames - 1);
-      const currentIndex = Math.floor(rawIndex);
-      const nextIndex = Math.min(currentIndex + 1, totalFrames - 1);
-      const fadeProgress = rawIndex - currentIndex;
-      
+      // Calculate opacity for all frames
       cinematicFrames.forEach((frame, idx) => {
-        if (Math.abs(idx - currentIndex) <= 1) loadFrame(frame);
+        // Preload nearby frames
+        if (Math.abs(idx - activeSceneIndex) <= 1) loadFrame(frame);
         
-        const baseZoom = 1.02; // Very subtle base zoom
+        // Calculate distance from the current fade value to this frame's index
+        const distance = Math.abs(currentFade - idx);
         
-        if (idx === currentIndex) {
-          frame.style.opacity = 1 - fadeProgress;
-          frame.style.transform = `translateZ(0) scale(${baseZoom + (fadeProgress * 0.05)})`;
-          frame.style.zIndex = 1;
-        } else if (idx === nextIndex) {
-          frame.style.opacity = fadeProgress;
-          frame.style.transform = `translateZ(0) scale(${baseZoom + ((fadeProgress - 1) * 0.05)})`;
-          frame.style.zIndex = 2;
+        // If distance is within 1, it has some opacity. Otherwise 0.
+        let opacity = 0;
+        if (distance < 1) {
+          opacity = 1 - distance;
+        }
+        
+        // Apply optimized styles
+        if (opacity > 0) {
+          frame.style.opacity = opacity;
+          frame.style.zIndex = opacity > 0.5 ? 2 : 1;
         } else {
           frame.style.opacity = 0;
           frame.style.zIndex = 0;
         }
+        // Use static hardware acceleration, no scale animation on mobile to save GPU
+        frame.style.transform = `translateZ(0) scale(1.02)`;
       });
       
-      requestAnimationFrame(humanizedLoop);
+      requestAnimationFrame(transitionLoop);
     };
     
-    requestAnimationFrame(humanizedLoop);
+    requestAnimationFrame(transitionLoop);
   }
 
   // Desktop-only Premium Interactions
