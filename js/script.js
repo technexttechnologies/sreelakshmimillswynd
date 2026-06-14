@@ -138,63 +138,93 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Cinematic Scroll Sequence Engine
+  const cinematicBgContainer = document.getElementById('cinematic-bg-container');
   const cinematicFrames = document.querySelectorAll('.cinematic-frame');
+  const timeLighting = document.querySelector('.cinematic-time-lighting');
+  
   if (cinematicFrames.length > 0) {
     const totalFrames = cinematicFrames.length;
     
-    // Lazy load logic for the frames
     const loadFrame = (frame) => {
-      if (frame.dataset.src && !frame.src) {
+      if (frame.tagName === 'IMG' && frame.dataset.src && !frame.src) {
         frame.src = frame.dataset.src;
+      } else if (frame.tagName === 'DIV') {
+        const imgs = frame.querySelectorAll('img');
+        imgs.forEach(img => {
+          if (img.dataset.src && !img.src) img.src = img.dataset.src;
+        });
       }
     };
     
-    // Initial load for first 2 frames
     loadFrame(cinematicFrames[0]);
     if (cinematicFrames.length > 1) loadFrame(cinematicFrames[1]);
 
-    let ticking = false;
+    // Inertia & Handheld Variables
+    let targetScrollY = 0;
+    let currentScrollY = 0;
+    let time = 0;
 
     window.addEventListener('scroll', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-          const scrollPercent = Math.max(0, Math.min(1, scrollY / maxScroll));
-          
-          // Calculate which frame should be active
-          // Multiply by (totalFrames - 1) so at 100% scroll we hit the last frame exactly
-          const rawIndex = scrollPercent * (totalFrames - 1);
-          const currentIndex = Math.floor(rawIndex);
-          const nextIndex = Math.min(currentIndex + 1, totalFrames - 1);
-          const fadeProgress = rawIndex - currentIndex;
-          
-          cinematicFrames.forEach((frame, idx) => {
-            // Lazy load adjacent frames
-            if (Math.abs(idx - currentIndex) <= 1) {
-              loadFrame(frame);
-            }
-            
-            // Handle opacity and subtle parallax scale
-            if (idx === currentIndex) {
-              frame.style.opacity = 1 - fadeProgress;
-              frame.style.transform = `scale(${1.05 + (fadeProgress * 0.05)})`;
-              frame.style.zIndex = 1;
-            } else if (idx === nextIndex) {
-              frame.style.opacity = fadeProgress;
-              frame.style.transform = `scale(${1.05 + ((fadeProgress - 1) * 0.05)})`;
-              frame.style.zIndex = 2;
-            } else {
-              frame.style.opacity = 0;
-              frame.style.zIndex = 0;
-            }
-          });
-          
-          ticking = false;
-        });
-        ticking = true;
-      }
+      targetScrollY = window.scrollY;
     });
+
+    const humanizedLoop = () => {
+      // Inertia Dampening
+      currentScrollY += (targetScrollY - currentScrollY) * 0.08;
+      
+      // Handheld Camera Breathing (Math.sin/Math.cos)
+      time += 0.02;
+      const breathX = Math.sin(time * 0.5) * 8 + Math.cos(time * 0.3) * 4;
+      const breathY = Math.cos(time * 0.4) * 8 + Math.sin(time * 0.6) * 4;
+      
+      // Apply breathing to entire container
+      if (cinematicBgContainer) {
+        cinematicBgContainer.style.transform = `translate3d(${breathX}px, ${breathY}px, 0) scale(1.05)`;
+      }
+
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = Math.max(0, Math.min(1, currentScrollY / maxScroll));
+      
+      // Time of day lighting (morning at top, neutral at bottom)
+      if (timeLighting) {
+        timeLighting.style.opacity = Math.max(0, 1 - (scrollPercent * 2));
+      }
+      
+      const rawIndex = scrollPercent * (totalFrames - 1);
+      const currentIndex = Math.floor(rawIndex);
+      const nextIndex = Math.min(currentIndex + 1, totalFrames - 1);
+      const fadeProgress = rawIndex - currentIndex;
+      
+      // Calculate Scroll Velocity for focal blur
+      const velocity = Math.abs(targetScrollY - currentScrollY);
+      const dynamicBlur = Math.min(velocity * 0.05, 5); // Smooth subtle blur on fast scroll
+      
+      cinematicFrames.forEach((frame, idx) => {
+        if (Math.abs(idx - currentIndex) <= 1) loadFrame(frame);
+        
+        const baseZoom = 1.02; // Very subtle base zoom
+        
+        if (idx === currentIndex) {
+          frame.style.opacity = 1 - fadeProgress;
+          frame.style.transform = `scale(${baseZoom + (fadeProgress * 0.05)})`;
+          frame.style.filter = `blur(${dynamicBlur}px)`;
+          frame.style.zIndex = 1;
+        } else if (idx === nextIndex) {
+          frame.style.opacity = fadeProgress;
+          frame.style.transform = `scale(${baseZoom + ((fadeProgress - 1) * 0.05)})`;
+          frame.style.filter = `blur(${dynamicBlur}px)`;
+          frame.style.zIndex = 2;
+        } else {
+          frame.style.opacity = 0;
+          frame.style.zIndex = 0;
+          frame.style.filter = `blur(0px)`;
+        }
+      });
+      
+      requestAnimationFrame(humanizedLoop);
+    };
+    
+    requestAnimationFrame(humanizedLoop);
   }
 
   // Desktop-only Premium Interactions
