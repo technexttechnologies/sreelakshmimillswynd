@@ -137,6 +137,66 @@ document.addEventListener('DOMContentLoaded', () => {
     headline.appendChild(iTag);
   }
 
+  // Cinematic Scroll Sequence Engine
+  const cinematicFrames = document.querySelectorAll('.cinematic-frame');
+  if (cinematicFrames.length > 0) {
+    const totalFrames = cinematicFrames.length;
+    
+    // Lazy load logic for the frames
+    const loadFrame = (frame) => {
+      if (frame.dataset.src && !frame.src) {
+        frame.src = frame.dataset.src;
+      }
+    };
+    
+    // Initial load for first 2 frames
+    loadFrame(cinematicFrames[0]);
+    if (cinematicFrames.length > 1) loadFrame(cinematicFrames[1]);
+
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const scrollPercent = Math.max(0, Math.min(1, scrollY / maxScroll));
+          
+          // Calculate which frame should be active
+          // Multiply by (totalFrames - 1) so at 100% scroll we hit the last frame exactly
+          const rawIndex = scrollPercent * (totalFrames - 1);
+          const currentIndex = Math.floor(rawIndex);
+          const nextIndex = Math.min(currentIndex + 1, totalFrames - 1);
+          const fadeProgress = rawIndex - currentIndex;
+          
+          cinematicFrames.forEach((frame, idx) => {
+            // Lazy load adjacent frames
+            if (Math.abs(idx - currentIndex) <= 1) {
+              loadFrame(frame);
+            }
+            
+            // Handle opacity and subtle parallax scale
+            if (idx === currentIndex) {
+              frame.style.opacity = 1 - fadeProgress;
+              frame.style.transform = `scale(${1.05 + (fadeProgress * 0.05)})`;
+              frame.style.zIndex = 1;
+            } else if (idx === nextIndex) {
+              frame.style.opacity = fadeProgress;
+              frame.style.transform = `scale(${1.05 + ((fadeProgress - 1) * 0.05)})`;
+              frame.style.zIndex = 2;
+            } else {
+              frame.style.opacity = 0;
+              frame.style.zIndex = 0;
+            }
+          });
+          
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+  }
+
   // Desktop-only Premium Interactions
   if (window.matchMedia("(min-width: 768px) and (hover: hover)").matches) {
     // Interactive Cursor Glow
