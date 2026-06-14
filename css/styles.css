@@ -385,12 +385,22 @@ img {
 }
 
 @media (max-width: 768px) {
+  .logo {
+    gap: 0.5rem;
+  }
   .logo-text {
-    display: none; /* Hide on mobile to save space if needed, or make it smaller */
-    /* Let's make it smaller instead of hiding it */
     display: block;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+  .logo img {
+    height: 45px;
+  }
+  .navbar.scrolled .logo img {
+    height: 35px;
+  }
+  .navbar.scrolled .logo-text {
+    font-size: 0.8rem;
   }
 }
 
