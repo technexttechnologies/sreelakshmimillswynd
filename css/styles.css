@@ -468,6 +468,18 @@ img {
   z-index: -5;
   animation: kenBurns 25s infinite alternate ease-in-out, heroFadeIn 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   opacity: 0;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 768px) {
+  .hero-particles,
+  .hero-depth-layer,
+  .global-bg-animation {
+    display: none !important;
+  }
+  .hero-bg {
+    animation: heroFadeIn 1s ease-out forwards !important;
+  }
 }
 
 @keyframes heroFadeIn {

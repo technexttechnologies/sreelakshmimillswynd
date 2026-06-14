@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cinematicFrames = document.querySelectorAll('.cinematic-frame');
   const timeLighting = document.querySelector('.cinematic-time-lighting');
   
-  if (cinematicFrames.length > 0) {
+  if (cinematicFrames.length > 0 && window.matchMedia("(min-width: 768px)").matches) {
     const totalFrames = cinematicFrames.length;
     
     const loadFrame = (frame) => {

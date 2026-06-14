@@ -108,6 +108,8 @@
 
   <link rel="icon" href="https://res.cloudinary.com/dwzerbhuj/image/upload/q_auto/f_auto/v1777002904/sreelakshmi_mils_logo_psd_egg0pc.png" type="image/png">
   <link rel="stylesheet" href="./css/styles.css">
+  <link rel="preload" as="image" href="./assets/images/premium_hero_bg.png" fetchpriority="high">
+  <link rel="preload" as="image" href="./assets/images/cinematic/cine_1.png" fetchpriority="high">
 </head>
 <body>
   <!-- Cinematic Scroll Sequence Background -->
@@ -173,9 +175,9 @@
   </nav>
 
   <!-- Hero Section -->
-  <section id="home" class="hero">
+  <section id="home" class="hero" style="min-height: 100vh;">
     <!-- Premium continuous background animation -->
-    <img src="./assets/images/premium_hero_bg.png" alt="Freshly processed flour products, premium quality rice, and agricultural products from Wayanad Food Manufacturing Company" class="hero-bg">
+    <img src="./assets/images/premium_hero_bg.png" fetchpriority="high" decoding="async" alt="Freshly processed flour products, premium quality rice, and agricultural products from Wayanad Food Manufacturing Company" class="hero-bg">
     
     <!-- Premium Header Effects Layer -->
     <div class="hero-depth-layer"></div>
