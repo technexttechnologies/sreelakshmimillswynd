@@ -1178,9 +1178,17 @@ footer {
   .process-timeline {
     flex-direction: column;
     gap: 3rem;
+    position: relative;
   }
   .process-timeline::before {
-    display: none;
+    display: block;
+    top: 30px;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: auto;
+    background: linear-gradient(180deg, transparent, var(--color-gold), transparent);
   }
   .step-dot {
     margin: 0 auto 1rem;
