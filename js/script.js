@@ -224,10 +224,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hero Content Parallax & Fade
     const heroContent = document.querySelector('.hero-content');
+    const heroBg = document.querySelector('.hero-bg');
+    const heroParticles = document.querySelector('.hero-particles');
+    const heroDepthLayer = document.querySelector('.hero-depth-layer');
+    
     window.addEventListener('scroll', () => {
-      if (window.scrollY < window.innerHeight && heroContent) {
-        heroContent.style.transform = `translate3d(0, ${window.scrollY * 0.4}px, 0)`;
-        heroContent.style.opacity = 1 - (window.scrollY / window.innerHeight) * 1.5;
+      const scrollY = window.scrollY;
+      if (scrollY < window.innerHeight) {
+        if (heroContent) {
+          heroContent.style.transform = `translate3d(0, ${scrollY * 0.4}px, 0)`;
+          heroContent.style.opacity = 1 - (scrollY / window.innerHeight) * 1.5;
+        }
+        if (heroBg) heroBg.style.transform = `translate3d(0, ${scrollY * 0.15}px, 0) scale(1.08)`;
+        if (heroDepthLayer) heroDepthLayer.style.transform = `translate3d(0, ${scrollY * 0.25}px, -1px) scale(1.2)`;
+        if (heroParticles) heroParticles.style.transform = `translate3d(0, ${scrollY * 0.35}px, 0)`;
       }
     });
 

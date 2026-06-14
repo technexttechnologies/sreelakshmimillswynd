@@ -416,42 +416,99 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -2;
-  animation: kenBurns 25s infinite linear;
-  opacity: 0.3;
-  mix-blend-mode: luminosity;
+  z-index: -5;
+  animation: kenBurns 25s infinite alternate ease-in-out, heroFadeIn 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes heroFadeIn {
+  from { opacity: 0; filter: blur(20px); transform: scale(1.1); }
+  to { opacity: 0.5; filter: blur(0px); transform: scale(1); }
 }
 
 @keyframes kenBurns {
   0% { transform: scale(1) translate(0, 0); }
-  25% { transform: scale(1.05) translate(-1%, -1%); }
-  50% { transform: scale(1.1) translate(1%, 0%); }
-  75% { transform: scale(1.05) translate(-1%, 1%); }
-  100% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1.5%, -1%); }
 }
 
+/* Parallax Depth Layer */
+.hero-depth-layer {
+  position: absolute;
+  top: -10%; left: -10%; width: 120%; height: 120%;
+  background: radial-gradient(circle at 30% 70%, rgba(212, 175, 55, 0.08), transparent 50%);
+  z-index: -4;
+  transform: translateZ(-1px) scale(1.2);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Floating Particles (Coffee/Spice dust) */
+.hero-particles {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: 
+    radial-gradient(circle at center, rgba(255,255,255,0.7) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(212,175,55,0.5) 1.5px, transparent 1.5px);
+  background-size: 100px 100px, 150px 150px;
+  background-position: 0 0, 50px 50px;
+  z-index: -3;
+  opacity: 0.4;
+  animation: floatParticles 60s linear infinite;
+  pointer-events: none;
+  will-change: background-position, transform;
+}
+
+@keyframes floatParticles {
+  0% { background-position: 0 0, 50px 50px; }
+  100% { background-position: 1000px 1000px, 1500px 500px; }
+}
+
+/* Light Leaks */
+.hero-light-leak {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(ellipse at 80% 20%, rgba(212, 175, 55, 0.15), transparent 50%),
+              radial-gradient(ellipse at 20% 80%, rgba(139, 69, 19, 0.25), transparent 50%);
+  z-index: -2;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: lightLeakPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes lightLeakPulse {
+  0% { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.05); }
+}
+
+/* Vignette Edges */
+.hero-vignette {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  box-shadow: inset 0 0 150px rgba(13, 8, 5, 0.95);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Premium Cinematic Overlay (Glassmorphism & Warm Tones) */
 .hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, rgba(20, 12, 8, 0.9), rgba(30, 21, 15, 0.6), rgba(20, 12, 8, 0.9));
-  background-size: 200% 200%;
-  animation: gradientFlow 15s ease infinite;
-  z-index: -1;
-}
-
-@keyframes gradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  background: linear-gradient(135deg, rgba(13, 8, 5, 0.85) 0%, rgba(40, 20, 10, 0.4) 50%, rgba(13, 8, 5, 0.95) 100%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .hero-content {
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-subtitle {
