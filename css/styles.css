@@ -1174,7 +1174,7 @@ footer {
   right: 40px;
   background-color: #25d366;
   color: #FFF;
-  border-radius: 50px;
+  border-radius: 50%;
   text-align: center;
   font-size: 30px;
   box-shadow: 0 10px 20px rgba(0,0,0, 0.4);
@@ -1183,10 +1183,33 @@ footer {
   align-items: center;
   justify-content: center;
   transition: var(--transition-smooth);
+  animation: floatBounce 3s ease-in-out infinite;
+}
+
+.whatsapp-float::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  border-radius: 50%;
+  background-color: #25d366;
+  z-index: -1;
+  animation: pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+@keyframes floatBounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
 }
 
 .whatsapp-float:hover {
-  transform: scale(1.1);
+  transform: translateY(-8px) scale(1.1);
   background-color: #20b858;
 }
 
