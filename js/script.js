@@ -103,6 +103,48 @@ document.addEventListener('DOMContentLoaded', () => {
     revealObserver.observe(el);
   });
 
+  // Trust Counter Animation
+  const trustCounters = document.querySelectorAll('.trust-number');
+  
+  const animateCounter = (counter) => {
+    const target = +counter.getAttribute('data-target');
+    const duration = 2000; // 2 seconds
+    const increment = target / (duration / 16); // 60fps
+    
+    let current = 0;
+    
+    const updateCounter = () => {
+      current += increment;
+      if (current < target) {
+        counter.innerText = Math.ceil(current) + (target > 50 ? '+' : '');
+        requestAnimationFrame(updateCounter);
+      } else {
+        counter.innerText = target + (target > 50 ? '+' : '');
+      }
+    };
+    
+    updateCounter();
+  };
+  
+  const counterCallback = (entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const counters = entry.target.querySelectorAll('.trust-number');
+        counters.forEach(counter => {
+          if (counter.innerText === '0') {
+            animateCounter(counter);
+          }
+        });
+      }
+    });
+  };
+  
+  const counterObserver = new IntersectionObserver(counterCallback, { threshold: 0.5 });
+  const trustStrip = document.querySelector('.trust-strip');
+  if (trustStrip) {
+    counterObserver.observe(trustStrip);
+  }
+
   // Section Gold Divider Observer
   const sectionElements = document.querySelectorAll('.section-padding');
   const dividerObserver = new IntersectionObserver((entries) => {
