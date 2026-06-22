@@ -49,8 +49,17 @@ html {
   object-fit: cover;
   opacity: 0;
   will-change: opacity, transform;
-  transform: scale(1.05); /* Start slightly zoomed for parallax effect */
-  transition: opacity 0.1s linear; /* Smooth crossfade fallback */
+  transform: scale(1.05);
+  transition: opacity 0.1s linear;
+}
+
+.cinematic-frame.active-frame {
+  animation: bgKenBurns 20s ease-in-out infinite alternate;
+}
+
+@keyframes bgKenBurns {
+  0% { transform: scale(1.02) translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1%, -0.5%); }
 }
 
 .cinematic-frame:first-child {
@@ -93,6 +102,16 @@ html {
   z-index: 12;
   pointer-events: none;
   transition: opacity 0.5s ease-out;
+}
+
+/* Cinematic Color Grade Overlay */
+.cinematic-color-grade {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(180, 120, 60, 0.08) 0%, rgba(60, 30, 10, 0.12) 100%);
+  mix-blend-mode: color;
+  z-index: 13;
+  pointer-events: none;
 }
 
 
@@ -277,6 +296,7 @@ img {
 .btn-primary:hover {
   background-color: transparent;
   color: var(--color-gold);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.3), inset 0 0 25px rgba(212, 175, 55, 0.05);
 }
 
 .btn-outline {
@@ -288,6 +308,7 @@ img {
 .btn-outline:hover {
   background-color: var(--color-text);
   color: var(--color-bg);
+  box-shadow: 0 0 25px rgba(242, 235, 225, 0.2);
 }
 
 /* Dark Mode Buttons */
@@ -329,16 +350,17 @@ img {
   100% { transform: scale(0.95); opacity: 0.5; }
 }
 
-/* Scroll Progress */
+/* Scroll Progress — Glowing Golden Streak */
 #scroll-progress {
   position: fixed;
   top: 0;
   left: 0;
   width: 0%;
   height: 2px;
-  background-color: var(--color-gold);
+  background: linear-gradient(90deg, var(--color-gold), #f0d060, var(--color-gold));
   z-index: 1000;
   transition: width 0.1s ease;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.6), 0 0 20px rgba(212, 175, 55, 0.3);
 }
 
 /* Navbar - Ultra Premium */
@@ -604,6 +626,88 @@ img {
   pointer-events: none;
 }
 
+/* Cinematic Curtain Reveal */
+.cinematic-curtain {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 9998;
+  pointer-events: none;
+  display: flex;
+}
+
+.curtain-left, .curtain-right {
+  width: 50%;
+  height: 100%;
+  background-color: var(--color-bg);
+  animation: curtainOpen 1.8s cubic-bezier(0.76, 0, 0.24, 1) 0.8s forwards;
+}
+
+.curtain-left {
+  transform-origin: left center;
+}
+
+.curtain-right {
+  transform-origin: right center;
+}
+
+@keyframes curtainOpen {
+  0% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+
+/* Golden Light Sweep */
+.hero-light-sweep {
+  position: absolute;
+  top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.12), rgba(255, 220, 120, 0.08), transparent);
+  z-index: 3;
+  pointer-events: none;
+  animation: lightSweep 2.5s cubic-bezier(0.25, 1, 0.5, 1) 2s forwards;
+  opacity: 0;
+}
+
+@keyframes lightSweep {
+  0% { left: -60%; opacity: 1; }
+  100% { left: 120%; opacity: 0; }
+}
+
+/* Scroll Down Indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  z-index: 5;
+  opacity: 0;
+  animation: fadeUp 1s forwards 2.5s;
+}
+
+.scroll-text {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.6);
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(180deg, var(--color-gold), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0% { transform: scaleY(0.3); transform-origin: top; opacity: 0.4; }
+  50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  100% { transform: scaleY(0.3); transform-origin: top; opacity: 0.4; }
+}
+
 .hero-content {
   max-width: 800px;
   margin: 0 auto;
@@ -622,7 +726,7 @@ img {
   display: block;
   opacity: 0;
   transform: translateY(30px);
-  animation: fadeUp 1s forwards 0.4s;
+  animation: fadeUp 1.2s forwards 1.2s;
 }
 
 .hero-content h1 {
@@ -665,7 +769,7 @@ img {
   font-weight: 300;
   opacity: 0;
   transform: translateY(30px);
-  animation: fadeUp 1s forwards 0.7s;
+  animation: fadeUp 1.2s forwards 1.8s;
 }
 
 .hero-btns {
@@ -674,7 +778,7 @@ img {
   gap: 2rem;
   opacity: 0;
   transform: translateY(30px);
-  animation: fadeUp 1s forwards 0.8s;
+  animation: fadeUp 1.2s forwards 2.1s;
 }
 
 @keyframes fadeUp {
@@ -1228,6 +1332,79 @@ footer {
   filter: blur(0);
 }
 
+/* Directional Reveal Variants */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-60px) scale(0.96);
+  filter: blur(5px);
+  transition: all 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-left.active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  filter: blur(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(60px) scale(0.96);
+  filter: blur(5px);
+  transition: all 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-right.active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  filter: blur(0);
+}
+
+/* Section Gold Dividers */
+.section-padding {
+  position: relative;
+}
+
+.section-padding::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-padding.divider-visible::after {
+  width: 60%;
+}
+
+/* Section Header Animated Underline */
+.section-header h2 {
+  position: relative;
+  display: inline-block;
+}
+
+.section-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-gold), transparent);
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+
+.reveal.active .section-header h2::after,
+.section-header.reveal.active h2::after,
+.section-header h2.underline-visible::after {
+  width: 100%;
+}
+
 /* Responsive Design */
 @media (max-width: 992px) {
   .hero-content h1 {
@@ -1334,7 +1511,34 @@ footer {
   }
   
   /* Disable hardware-intensive blurs on reveal animations */
-  .reveal, .hero-content h1 .char {
+  .reveal, .reveal-left, .reveal-right, .hero-content h1 .char {
     filter: none !important;
+  }
+
+  /* Simplify reveal directions to basic fade on mobile */
+  .reveal-left, .reveal-right {
+    transform: translateY(30px);
+  }
+  .reveal-left.active, .reveal-right.active {
+    transform: translateY(0);
+  }
+  
+  /* Disable cinematic curtain and light sweep on mobile */
+  .cinematic-curtain,
+  .hero-light-sweep {
+    display: none !important;
+  }
+
+  /* Simplify scroll indicator for mobile */
+  .scroll-indicator {
+    bottom: 2rem;
+  }
+  .scroll-line {
+    height: 25px;
+  }
+
+  /* Disable background Ken Burns on mobile for perf */
+  .cinematic-frame.active-frame {
+    animation: none !important;
   }
 }

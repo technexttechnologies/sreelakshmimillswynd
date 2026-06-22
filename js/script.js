@@ -52,14 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Reveal Animations on Scroll
-  const revealElements = document.querySelectorAll('.reveal');
+  const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
   
   const revealCallback = (entries, observer) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('active');
-        // Optional: Stop observing once revealed
-        // observer.unobserve(entry.target);
       }
     });
   };
@@ -74,6 +72,28 @@ document.addEventListener('DOMContentLoaded', () => {
   revealElements.forEach(el => {
     revealObserver.observe(el);
   });
+
+  // Section Gold Divider Observer
+  const sectionElements = document.querySelectorAll('.section-padding');
+  const dividerObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('divider-visible');
+      }
+    });
+  }, { threshold: 0.3 });
+  sectionElements.forEach(el => dividerObserver.observe(el));
+
+  // Section Header H2 Underline Observer
+  const sectionH2s = document.querySelectorAll('.section-header h2');
+  const h2Observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('underline-visible');
+      }
+    });
+  }, { threshold: 0.5 });
+  sectionH2s.forEach(el => h2Observer.observe(el));
 
   // WhatsApp Form Integration
   const whatsappForm = document.getElementById('whatsapp-form');
@@ -105,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Premium Headline Split Text Animation
   const headline = document.querySelector('.hero-content h1');
   if (headline) {
-    const line1 = "Crafted Through Tradition".split(' ');
+    const line1 = "Premium Rice & Flour Mill".split(' ');
     const line2 = "Defined by Quality".split(' ');
     
     headline.innerHTML = '';
@@ -120,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const span = document.createElement('span');
         span.textContent = char;
         span.className = 'char';
-        span.style.animationDelay = `${0.4 + (charIndex * 0.03)}s`;
+        span.style.animationDelay = `${1.3 + (charIndex * 0.035)}s`;
         wordSpan.appendChild(span);
         charIndex++;
       });
@@ -136,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     line2.forEach(word => appendWord(word, iTag));
     headline.appendChild(iTag);
   }
+
 
   // Cinematic Background Scene System (IntersectionObserver)
   const cinematicBgContainer = document.getElementById('cinematic-bg-container');
@@ -195,8 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let time = 0;
 
     const transitionLoop = () => {
-      // Smoothly approach the active scene index (e.g. going from 0 to 5)
-      currentFade += (activeSceneIndex - currentFade) * 0.05;
+      // Smoothly approach the active scene index
+      currentFade += (activeSceneIndex - currentFade) * 0.025;
       
       // Handheld Camera Breathing (Math.sin/Math.cos)
       time += 0.02;
@@ -225,11 +246,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (opacity > 0) {
           frame.style.opacity = opacity;
           frame.style.zIndex = opacity > 0.5 ? 2 : 1;
+          if (opacity > 0.5) {
+            frame.classList.add('active-frame');
+          } else {
+            frame.classList.remove('active-frame');
+          }
         } else {
           frame.style.opacity = 0;
           frame.style.zIndex = 0;
+          frame.classList.remove('active-frame');
         }
-        // Use static hardware acceleration, no scale animation on mobile to save GPU
+        // Use static hardware acceleration
         frame.style.transform = `translateZ(0) scale(1.02)`;
       });
       
@@ -276,10 +303,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (heroContent) {
           heroContent.style.transform = `translate3d(0, ${scrollY * 0.4}px, 0)`;
           heroContent.style.opacity = 1 - (scrollY / window.innerHeight) * 1.5;
+          heroContent.style.filter = `blur(${(scrollY / window.innerHeight) * 6}px)`;
         }
         if (heroBg) heroBg.style.transform = `translate3d(0, ${scrollY * 0.15}px, 0) scale(1.08)`;
         if (heroDepthLayer) heroDepthLayer.style.transform = `translate3d(0, ${scrollY * 0.25}px, -1px) scale(1.2)`;
         if (heroParticles) heroParticles.style.transform = `translate3d(0, ${scrollY * 0.35}px, 0)`;
+        
+        // Fade out scroll indicator
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator) {
+          scrollIndicator.style.opacity = Math.max(0, 1 - (scrollY / (window.innerHeight * 0.3)));
+        }
       }
     });
 
