@@ -501,17 +501,44 @@ img {
   overflow: hidden;
 }
 
-.hero-bg {
+/* Hero Video-Style Slideshow */
+.hero-video-slideshow {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: -5;
-  animation: kenBurns 25s infinite alternate ease-in-out, heroFadeIn 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  overflow: hidden;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
   opacity: 0;
-  will-change: transform, opacity;
+  transform: scale(1.15);
+  transition: opacity 2s ease-in-out;
+  will-change: opacity, transform;
+}
+
+.hero-slide.active {
+  opacity: 0.55;
+  animation: heroSlideKenBurns 8s ease-in-out forwards;
+}
+
+.hero-slide.fade-out {
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+
+@keyframes heroSlideKenBurns {
+  0% { transform: scale(1.15) translate(0, 0); }
+  100% { transform: scale(1.05) translate(-1.5%, -1%); }
+}
+
+@keyframes heroFadeIn {
+  from { opacity: 0; filter: blur(20px); transform: scale(1.1); }
+  to { opacity: 0.55; filter: blur(0px); transform: scale(1); }
 }
 
 @media (max-width: 768px) {
@@ -520,19 +547,14 @@ img {
   .global-bg-animation {
     display: none !important;
   }
-  .hero-bg {
-    animation: heroFadeIn 1s ease-out forwards !important;
+  .hero-slide.active {
+    animation: heroSlideKenBurnsMobile 8s ease-in-out forwards;
   }
 }
 
-@keyframes heroFadeIn {
-  from { opacity: 0; filter: blur(20px); transform: scale(1.1); }
-  to { opacity: 0.5; filter: blur(0px); transform: scale(1); }
-}
-
-@keyframes kenBurns {
-  0% { transform: scale(1) translate(0, 0); }
-  100% { transform: scale(1.08) translate(-1.5%, -1%); }
+@keyframes heroSlideKenBurnsMobile {
+  0% { transform: scale(1.08); }
+  100% { transform: scale(1.02); }
 }
 
 /* Parallax Depth Layer */
@@ -1505,9 +1527,8 @@ footer {
   }
   
   /* Disable heavy hero image luminosity blend */
-  .hero-bg {
+  .hero-slide {
     mix-blend-mode: normal;
-    opacity: 0.5;
   }
   
   /* Disable hardware-intensive blurs on reveal animations */

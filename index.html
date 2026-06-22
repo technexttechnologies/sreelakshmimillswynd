@@ -113,7 +113,7 @@
   <link rel="shortcut icon" href="https://res.cloudinary.com/dwzerbhuj/image/upload/q_auto/f_auto/v1777002904/sreelakshmi_mils_logo_psd_egg0pc.png" type="image/png">
   <link rel="apple-touch-icon" href="https://res.cloudinary.com/dwzerbhuj/image/upload/q_auto/f_auto/v1777002904/sreelakshmi_mils_logo_psd_egg0pc.png">
   <link rel="stylesheet" href="./css/styles.css">
-  <link rel="preload" as="image" href="./assets/images/premium_hero_bg.png" fetchpriority="high">
+  <link rel="preload" as="image" href="./assets/images/hero_video_frame.png" fetchpriority="high">
   <link rel="preload" as="image" href="./assets/images/cinematic/kerala_coffee.png" fetchpriority="high">
 </head>
 <body>
@@ -180,8 +180,14 @@
 
   <!-- Hero Section -->
   <section id="home" class="hero" style="min-height: 100vh;" data-scene="0">
-    <!-- Premium continuous background animation -->
-    <img src="./assets/images/premium_hero_bg.png" fetchpriority="high" decoding="async" alt="Freshly processed flour products, premium quality rice, and agricultural products from Wayanad Food Manufacturing Company" class="hero-bg">
+    <!-- Hero Video-Style Slideshow Background -->
+    <div class="hero-video-slideshow">
+      <img src="./assets/images/hero_video_frame.png" class="hero-slide active" alt="Premium Wayanadan Products" fetchpriority="high">
+      <img src="./assets/images/cinematic/kerala_coffee.png" class="hero-slide" alt="Kerala Coffee Processing" loading="lazy">
+      <img src="./assets/images/cinematic/kerala_spices.png" class="hero-slide" alt="Kerala Spice Processing" loading="lazy">
+      <img src="./assets/images/cinematic/kerala_coconut.png" class="hero-slide" alt="Coconut Oil Extraction" loading="lazy">
+      <img src="./assets/images/premium_hero_bg.png" class="hero-slide" alt="Premium Products" loading="lazy">
+    </div>
     
     <!-- Premium Header Effects Layer -->
     <div class="hero-depth-layer"></div>

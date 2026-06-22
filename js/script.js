@@ -10,6 +10,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500); // Small delay to ensure smooth transition
   });
 
+  // Hero Video-Style Slideshow Engine
+  const heroSlides = document.querySelectorAll('.hero-slide');
+  if (heroSlides.length > 1) {
+    let currentSlide = 0;
+    const slideInterval = 6000; // 6 seconds per slide
+
+    const nextSlide = () => {
+      // Fade out current
+      heroSlides[currentSlide].classList.remove('active');
+      heroSlides[currentSlide].classList.add('fade-out');
+      
+      // Move to next
+      currentSlide = (currentSlide + 1) % heroSlides.length;
+      
+      // Remove fade-out from new slide and activate it
+      heroSlides[currentSlide].classList.remove('fade-out');
+      heroSlides[currentSlide].classList.add('active');
+      
+      // Reset Ken Burns animation by re-triggering
+      heroSlides[currentSlide].style.animation = 'none';
+      heroSlides[currentSlide].offsetHeight; // Force reflow
+      heroSlides[currentSlide].style.animation = '';
+    };
+
+    // Start auto-cycling after initial curtain reveal
+    setTimeout(() => {
+      setInterval(nextSlide, slideInterval);
+    }, 2500);
+  }
+
   // Scroll Progress Bar
   const scrollProgress = document.getElementById('scroll-progress');
   
@@ -293,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hero Content Parallax & Fade
     const heroContent = document.querySelector('.hero-content');
-    const heroBg = document.querySelector('.hero-bg');
+    const heroSlideshow = document.querySelector('.hero-video-slideshow');
     const heroParticles = document.querySelector('.hero-particles');
     const heroDepthLayer = document.querySelector('.hero-depth-layer');
     
@@ -305,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
           heroContent.style.opacity = 1 - (scrollY / window.innerHeight) * 1.5;
           heroContent.style.filter = `blur(${(scrollY / window.innerHeight) * 6}px)`;
         }
-        if (heroBg) heroBg.style.transform = `translate3d(0, ${scrollY * 0.15}px, 0) scale(1.08)`;
+        if (heroSlideshow) heroSlideshow.style.transform = `translate3d(0, ${scrollY * 0.15}px, 0)`;
         if (heroDepthLayer) heroDepthLayer.style.transform = `translate3d(0, ${scrollY * 0.25}px, -1px) scale(1.2)`;
         if (heroParticles) heroParticles.style.transform = `translate3d(0, ${scrollY * 0.35}px, 0)`;
         
